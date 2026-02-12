@@ -1,0 +1,26 @@
+=== Zoho Diagnostics ===
+Auth OK. Org: 60039941665
+
+--- Recent Expenses ---
+Count: 7
+  1. 2026-02-10 | Probots Electronics India Pvt Ltd | Rs82.02 | Ref:INV-014450 | ID:2490070000000083001 | Created:2026-02-10T18:24:07+0530
+  2. 2025-03-15 | N/A | Rs7294.7 | Ref:N/A | ID:2490070000000040021 | Created:2025-04-17T11:19:15+0530
+  3. 2025-03-27 | N/A | Rs4000 | Ref:N/A | ID:2490070000000040001 | Created:2025-04-17T11:18:59+0530
+  4. 2025-03-31 | N/A | Rs3000 | Ref:N/A | ID:2490070000000038209 | Created:2025-04-15T18:18:27+0530
+  5. 2025-03-29 | N/A | Rs413 | Ref:N/A | ID:2490070000000038189 | Created:2025-04-15T18:18:13+0530
+  6. 2025-03-29 | N/A | Rs413 | Ref:N/A | ID:2490070000000038169 | Created:2025-04-15T18:18:00+0530
+  7. 2025-03-29 | N/A | Rs413 | Ref:N/A | ID:2490070000000038149 | Created:2025-04-15T18:17:46+0530
+
+--- Recent Bills ---
+Count: 2
+  1. 2026-02-10 | Probots Electronics India Pvt Ltd | Rs82.02 | Bill#:INV-014450 | ID:2490070000000078003 | Created:2026-02-10T17:21:56+0530
+  2. 2025-04-15 | Techforge Consulting LLP | Rs76700 | Bill#:QT-2024-000014 | ID:2490070000000034198 | Created:2025-04-15T17:08:38+0530
+
+--- Test Expense Create ---
+Account: Travel Expense (2490070000000000516)
+Create response code: 0
+Create response msg: The expense has been recorded.
+Expense ID: 2490070000000088001
+Test expense deleted.
+
+=== Done ===

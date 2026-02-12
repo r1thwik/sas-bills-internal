@@ -1,0 +1,15 @@
+=== Org Details ===
+Org: SAUBHA AERIAL SYSTEMS PRIVATE LIMITED | ID: 60039941665 | Active: true
+Org: SAUBHA AERIAL SYSTEMS PRIVATE LIMITED | ID: 60040232148 | Active: false
+
+=== Expense ID 2490070000000083001 ===
+Status: nonbillable
+Date: 2026-02-10
+Vendor: Probots Electronics India Pvt Ltd
+Amount: 82.02
+Ref#: INV-014450
+Account: Cost of Goods Sold
+Description: Line Items:
+1. Deans T Plug Connector Male and Female for RC LiPo Battery PRO616 — Qty: 1 × ₹82 = ₹8
+Created: 2026-02-10T18:24:07+0530
+GST Treatment: business_gst
