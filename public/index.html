@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billdozer</title>
+    <meta name="description" content="Upload invoices to Zoho Books with AI-powered extraction — PROJECTX LABS">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="bg-laser-grid"></div>
+
+    <div class="app">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 14v4h16v-4" />
+                        <path d="M12 21V3" />
+                        <path d="M12 3l4 4" />
+                        <path d="M12 3L8 7" />
+                    </svg>
+                </div>
+                <div>
+                    <h1>Billdozer</h1>
+                    <p class="subtitle">Invoice → Zoho Expenses</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stage Indicator -->
+        <div class="stage-indicator">
+            <div class="stage-step active" id="step-1">
+                <div class="step-dot">1</div>
+                <span>Upload</span>
+            </div>
+            <div class="step-line" id="line-1"></div>
+            <div class="stage-step" id="step-2">
+                <div class="step-dot">2</div>
+                <span>Review</span>
+            </div>
+            <div class="step-line" id="line-2"></div>
+            <div class="stage-step" id="step-3">
+                <div class="step-dot">3</div>
+                <span>Done</span>
+            </div>
+        </div>
+
+        <main class="main-card">
+            <!-- ═══ Stage 1: Upload ═══ -->
+            <section id="upload-stage" class="stage active">
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-content">
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20" />
+                                <path d="M8 8V4h8v4" />
+                                <path d="M6 14v4h12v-4" />
+                                <circle cx="6" cy="18" r="2" />
+                                <circle cx="18" cy="18" r="2" />
+                            </svg>
+                        </div>
+                        <p class="drop-text">Drop invoices here or <span class="browse-link">browse</span></p>
+                        <p class="file-types">JPG, PNG, WebP, PDF — up to 15 MB/file</p>
+                    </div>
+                    <!-- Added 'multiple' -->
+                    <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple hidden>
+                </div>
+
+                <div class="file-preview" id="file-preview" style="display: none;">
+                    <div class="preview-thumb" id="preview-thumb"></div>
+                    <div class="preview-info">
+                        <span class="preview-name" id="preview-name"></span>
+                        <button type="button" class="btn btn-ghost btn-sm" id="remove-file-btn">✕ Remove</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-lg" id="extract-btn" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                    Extract Invoice Data
+                </button>
+            </section>
+
+            <!-- ═══ Processing ═══ -->
+            <section id="processing-stage" class="stage">
+                <div class="processing-container">
+                    <div class="rocket-wrapper">
+                        <svg class="rocket-loader" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                            <path
+                                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                        </svg>
+                        <div class="rocket-exhaust"></div>
+                    </div>
+                    <p class="processing-text">Analyzing bill...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ Stage 2: Review ═══ -->
+            <section id="review-stage" class="stage">
+                <div class="review-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-start">
+                    <div>
+                        <h2>Review Extracted Data</h2>
+                        <p>Verify and edit the details below, then confirm.</p>
+                    </div>
+                    <div id="queue-status"
+                        style="font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.6rem; background: var(--bg-hover); border-radius: 20px; color: var(--accent); display: none">
+                        Bill 1 of 5</div>
+                </div>
+
+                <form id="review-form">
+                    <!-- Vendor -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Vendor
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group" style="position:relative">
+                                <label for="vendor_name">Vendor Name</label>
+                                <input type="text" id="vendor_name" name="vendor_name" autocomplete="off"
+                                    placeholder="Start typing…">
+                                <input type="hidden" id="vendor_id" name="vendor_id">
+                                <div class="autocomplete-dropdown" id="vendor-dropdown"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="vendor_gstin">GSTIN</label>
+                                <input type="text" id="vendor_gstin" name="vendor_gstin"
+                                    placeholder="e.g. 29ABCDE1234F1Z5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Details -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Invoice Details
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bill_number">Invoice Number</label>
+                                <input type="text" id="bill_number" name="bill_number">
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice_date">Invoice Date</label>
+                                <input type="date" id="invoice_date" name="invoice_date">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="invoice_total">Invoice Total (from invoice)</label>
+                                <input type="number" id="invoice_total" name="invoice_total" step="0.01" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax & Accounts -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            Tax & Accounts
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="gst_type">GST Type</label>
+                                <select id="gst_type" name="gst_type">
+                                    <option value="intra_state">Intra-State (CGST+SGST)</option>
+                                    <option value="inter_state">Inter-State (IGST)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tax_treatment">Tax Treatment</label>
+                                <select id="tax_treatment" name="tax_treatment">
+                                    <option value="exclusive">Exclusive</option>
+                                    <option value="inclusive">Inclusive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="gst_rate">GST Rate(s)</label>
+                                <input type="text" id="gst_rate" name="gst_rate" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Reverse Charge</label>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="reverse_charge" value="false"
+                                            checked> No</label>
+                                    <label class="radio-label"><input type="radio" name="reverse_charge" value="true">
+                                        Yes</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="account_id">Expense Account</label>
+                                <select id="account_id" name="account_id"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="paid_through_account_id">Paid Through</label>
+                                <select id="paid_through_account_id" name="paid_through_account_id"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Line Items -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                            Line Items
+                        </h3>
+                        <div class="line-items-table-wrapper">
+                            <table class="line-items-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-desc">Description</th>
+                                        <th class="col-amount">Amount</th>
+                                        <th class="col-gst">GST %</th>
+                                        <th class="col-tax">Tax</th>
+                                        <th class="col-action"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="line-items-body"></tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-sm" id="add-line-item-btn">+ Add Line
+                            Item</button>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="form-section totals-section" id="totals-section">
+                        <div class="totals-row"><span>Subtotal</span><span id="subtotal">₹0.00</span></div>
+                        <div class="totals-row"><span>Tax</span><span id="tax-total">₹0.00</span></div>
+                        <div class="totals-row total-final"><span>Total</span><span id="grand-total">₹0.00</span></div>
+                        <div class="totals-row totals-mismatch" id="totals-mismatch" style="display:none">
+                            <span>⚠ Mismatch with invoice total</span>
+                            <span id="mismatch-diff"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="display:flex; justify-content:space-between; gap:1rem;">
+                        <button type="button" class="btn btn-ghost" id="back-btn">← Back / Restart</button>
+                        <div style="display:flex; gap:0.5rem">
+                            <button type="button" class="btn btn-ghost" id="skip-btn" style="display:none">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg> Skip
+                            </button>
+                            <button type="button" class="btn btn-primary" id="confirm-btn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Upload to Zoho
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- ═══ Stage 3: Success ═══ -->
+            <section id="success-stage" class="stage">
+                <div class="success-container">
+                    <svg class="success-icon rocket-success" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"
+                            class="rocket-body" />
+                        <path
+                            d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"
+                            class="rocket-body" />
+                        <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" class="rocket-fin" />
+                        <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" class="rocket-fin" />
+                    </svg>
+                    <h2>Touchdown! Expense Created</h2>
+                    <div class="success-details" id="success-details"></div>
+                    <button class="btn btn-primary" id="new-bill-btn">Upload Another</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Error Bar -->
+    <div class="error-bar" id="error-bar">
+        <span class="error-msg" id="error-msg"></span>
+        <button class="error-dismiss" id="error-dismiss">✕</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
